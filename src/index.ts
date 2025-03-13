@@ -5,9 +5,6 @@ import { CONFIG } from './config';
 import { dataRoutes } from './routes/data';
 
 async function main() {
-  await checkMasterCertificate();
-  initDevice();
-
   const app = new Hono();
 
   app.route('/', dataRoutes);
@@ -20,6 +17,9 @@ async function main() {
     port: CONFIG.PORT,
     fetch: app.fetch,
   });
+
+  await checkMasterCertificate();
+  initDevice();
 }
 
 main();
