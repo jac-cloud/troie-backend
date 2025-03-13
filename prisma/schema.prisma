@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Device {
+  device_id   String       @id
+  device_name String?
+  sensorData  SensorData[]
+  alarms      Alarm[]
+}
+
+model SensorData {
+  id          String   @id @default(uuid())
+  device_id   String
+  device      Device   @relation(fields: [device_id], references: [device_id])
+  humidity    Float
+  temperature Float
+  timestamp   DateTime
+  free_ram    Int
+  total_ram   Int
+}
+
+model Alarm {
+  id        String @id @default(uuid())
+  device_id String
+  device    Device @relation(fields: [device_id], references: [device_id])
+  threshold Float
+  operator  String
+}
