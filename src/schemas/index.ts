@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const RawSensorDataSchema = z.object({
   timestamp: z.number(),

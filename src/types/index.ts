@@ -12,4 +12,3 @@ export interface RawSensorData {
   /** Sensor identifier */
   sensorCode: string;
 }
-

@@ -1,9 +1,7 @@
-import { CONFIG } from '../config';
 import * as awsIot from 'aws-iot-device-sdk';
 import * as AWS from 'aws-sdk';
-
 import * as os from 'os';
-import { RawSensorData } from '../types';
+import { CONFIG } from '../config';
 import { RawSensorDataSchema } from '../schemas';
 import { DB } from './db';
 

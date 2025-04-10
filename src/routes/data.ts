@@ -1,8 +1,8 @@
-import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { Hono } from 'hono';
 import { z } from 'zod';
-import { DB } from '../utils/db';
-import { HTTPException } from 'hono/http-exception';
+import { getSensorData } from '../services/getSensorData';
+import { getSensorStats } from '../services/getSensorStats';
 
 export const dataRoutes = new Hono();
 
@@ -22,7 +22,7 @@ const SensorDataResponse = z.array(
     timestamp: z.string(),
     temperature: z.number(),
     humidity: z.number(),
-  })
+  }),
 );
 
 dataRoutes.get(
@@ -33,59 +33,9 @@ dataRoutes.get(
     const { deviceId } = c.req.valid('param');
     const { startDate, endDate, points = 100 } = c.req.valid('query');
 
-    const { prisma } = DB.getInstance();
-
-    const device = await prisma.device.findUnique({
-      where: {
-        device_id: deviceId,
-      },
-    });
-
-    if (!device) {
-      throw new HTTPException(404, { message: 'Device not found' });
-    }
-
-    const sensorData = await prisma.sensorData.findMany({
-      where: {
-        device_id: deviceId,
-        timestamp: {
-          gte: new Date(startDate),
-          lte: new Date(endDate),
-        },
-      },
-      take: points,
-      orderBy: {
-        timestamp: 'desc',
-      },
-    });
-
-    if (sensorData.length <= points) {
-      return c.json(
-        SensorDataResponse.parse(
-          sensorData.map(d => ({
-            deviceId: d.device_id,
-            timestamp: d.timestamp.toISOString(),
-            temperature: d.temperature,
-            humidity: d.humidity,
-          }))
-        )
-      );
-    }
-
-    const interval = Math.floor(sensorData.length / points);
-    const reducedData = sensorData.filter((_, i) => i % interval === 0);
-
-    return c.json(
-      SensorDataResponse.parse(
-        reducedData.map(d => ({
-          deviceId: d.device_id,
-          timestamp: d.timestamp.toISOString(),
-          temperature: d.temperature,
-          humidity: d.humidity,
-        }))
-      )
-    );
-  }
+    const data = await getSensorData(deviceId, startDate, endDate, points);
+    return c.json(SensorDataResponse.parse(data));
+  },
 );
 
 const SensorStatsParams = z.object({
@@ -104,7 +54,7 @@ const SensorStatsResponse = z.array(
     timestamp: z.string(),
     freeRam: z.number(),
     totalRam: z.number(),
-  })
+  }),
 );
 
 dataRoutes.get(
@@ -115,57 +65,7 @@ dataRoutes.get(
     const { deviceId } = c.req.valid('param');
     const { startDate, endDate, points = 100 } = c.req.valid('query');
 
-    const { prisma } = DB.getInstance();
-
-    const device = await prisma.device.findUnique({
-      where: {
-        device_id: deviceId,
-      },
-    });
-
-    if (!device) {
-      throw new HTTPException(404, { message: 'Device not found' });
-    }
-
-    const sensorData = await prisma.sensorData.findMany({
-      where: {
-        device_id: deviceId,
-        timestamp: {
-          gte: new Date(startDate),
-          lte: new Date(endDate),
-        },
-      },
-      take: points,
-      orderBy: {
-        timestamp: 'desc',
-      },
-    });
-
-    if (sensorData.length <= points) {
-      return c.json(
-        SensorStatsResponse.parse(
-          sensorData.map(d => ({
-            deviceId: d.device_id,
-            timestamp: d.timestamp.toISOString(),
-            freeRam: d.free_ram,
-            totalRam: d.total_ram,
-          }))
-        )
-      );
-    }
-
-    const interval = Math.floor(sensorData.length / points);
-    const reducedData = sensorData.filter((_, i) => i % interval === 0);
-
-    return c.json(
-      SensorStatsResponse.parse(
-        reducedData.map(d => ({
-          deviceId: d.device_id,
-          timestamp: d.timestamp.toISOString(),
-          freeRam: d.free_ram,
-          totalRam: d.total_ram,
-        }))
-      )
-    );
-  }
+    const stats = await getSensorStats(deviceId, startDate, endDate, points);
+    return c.json(SensorStatsResponse.parse(stats));
+  },
 );

@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
-import { checkMasterCertificate } from './utils/certManager';
-import { initDevice } from './utils/initDevice';
 import { CONFIG } from './config';
 import { dataRoutes } from './routes/data';
+import { checkMasterCertificate } from './utils/certManager';
+import { initDevice } from './utils/initDevice';
 
 async function main() {
   const app = new Hono();
