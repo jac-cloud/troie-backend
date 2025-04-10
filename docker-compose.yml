@@ -3,7 +3,7 @@ services:
     image: oven/bun:latest
     ports:
       - '${DOCKER_PORT}:${PORT}'
-    command: sh -c "bun i && bun prisma migrate && bun prisma generate && bun src/index.ts"
+    command: sh -c "bun i && bun prisma migrate deploy && bun prisma generate && bun src/index.ts"
     volumes:
       - .:/app
     working_dir: /app
