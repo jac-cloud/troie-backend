@@ -8,6 +8,7 @@ const requireEnv = (key: string): string => {
 
 export class CONFIG {
   static PORT: string = requireEnv('PORT');
+  static CORS_ORIGIN: string = requireEnv('CORS_ORIGIN');
 
   static SECRET_MASTER_NAME: string = requireEnv('SECRET_MASTER_NAME');
   static SECRET_MASTER_ENDPOINT: string = requireEnv('SECRET_MASTER_ENDPOINT');
