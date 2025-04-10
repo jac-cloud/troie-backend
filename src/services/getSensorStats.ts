@@ -17,7 +17,7 @@ export async function getSensorStats(deviceId: string, startDate: string, endDat
       device_id: deviceId,
       timestamp: {
         gte: new Date(startDate),
-        lte: new Date(endDate),
+        lte: new Date(endDate + 'T23:59:59.999Z'),
       },
     },
     take: points,
