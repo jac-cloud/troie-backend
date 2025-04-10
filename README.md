@@ -15,7 +15,7 @@ To set up and run the project using Docker:
 3. Run the following command to start the services:
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
 ## Running the Project
