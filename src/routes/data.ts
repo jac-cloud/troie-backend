@@ -22,6 +22,7 @@ const SensorDataResponse = z.array(
     timestamp: z.string(),
     temperature: z.number(),
     humidity: z.number(),
+    alert: z.boolean(),
   }),
 );
 

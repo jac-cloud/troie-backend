@@ -30,6 +30,7 @@ export async function getSensorData(deviceId: string, startDate: string, endDate
       timestamp: d.timestamp.toISOString(),
       temperature: d.temperature,
       humidity: d.humidity,
+      alert: d.alert,
     }));
   }
 
@@ -41,5 +42,6 @@ export async function getSensorData(deviceId: string, startDate: string, endDate
     timestamp: d.timestamp.toISOString(),
     temperature: d.temperature,
     humidity: d.humidity,
+    alert: d.alert,
   }));
 }
