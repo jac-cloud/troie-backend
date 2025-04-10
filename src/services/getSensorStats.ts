@@ -20,7 +20,6 @@ export async function getSensorStats(deviceId: string, startDate: string, endDat
         lte: new Date(endDate + 'T23:59:59.999Z'),
       },
     },
-    take: points,
     orderBy: { timestamp: 'asc' },
   });
 
@@ -36,7 +35,7 @@ export async function getSensorStats(deviceId: string, startDate: string, endDat
   const interval = Math.floor(sensorData.length / points);
   const reducedData = sensorData.filter((_, i) => i % interval === 0);
 
-  if (reducedData.length > 0) {
+  if (reducedData.length > 1) {
     reducedData[0] = sensorData[0];
     reducedData[reducedData.length - 1] = sensorData[sensorData.length - 1];
   }
