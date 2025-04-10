@@ -4,6 +4,7 @@ import * as os from 'os';
 import { CONFIG } from '../config';
 import { RawSensorDataSchema } from '../schemas';
 import { DB } from './db';
+import { MemoryCache } from './memoryCache';
 
 AWS.config.update({ region: 'eu-west-1' });
 
@@ -47,19 +48,26 @@ async function parser(message: string) {
 
   if (isSensorData && data !== undefined) {
     const { prisma } = DB.getInstance();
+    const cache = MemoryCache.getInstance();
 
-    const device = await prisma.device.findUnique({
-      where: {
-        device_id: data.sensorCode,
-      },
-    });
+    let sensorDevice = cache.get(data.sensorCode);
 
-    if (!device) {
-      await prisma.device.create({
+    if (!sensorDevice) {
+      sensorDevice = await prisma.device.findUnique({
+        where: {
+          device_id: data.sensorCode,
+        },
+      });
+    }
+
+    if (!sensorDevice) {
+      sensorDevice = await prisma.device.create({
         data: {
           device_id: data.sensorCode,
         },
       });
+
+      cache.set(data.sensorCode, sensorDevice, 60 * 1000);
     }
 
     await prisma.sensorData.create({
