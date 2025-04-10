@@ -23,6 +23,7 @@ model SensorData {
   timestamp   DateTime
   free_ram    Int
   total_ram   Int
+  alert       Boolean @default(false)
 }
 
 model Alarm {

@@ -70,6 +70,31 @@ async function parser(message: string) {
       cache.set(data.sensorCode, sensorDevice, 60 * 1000);
     }
 
+    const alarms = await prisma.alarm.findMany({
+      where: {
+        device_id: data.sensorCode,
+      },
+    });
+
+    const alarm = alarms.find((alarm) => {
+      switch (alarm.operator) {
+        case '>':
+          return data.value > alarm.threshold;
+        case '>=':
+          return data.value >= alarm.threshold;
+        case '<':
+          return data.value < alarm.threshold;
+        case '<=':
+          return data.value <= alarm.threshold;
+        case '==':
+          return data.value === alarm.threshold;
+        case '!=':
+          return data.value !== alarm.threshold;
+        default:
+          return false;
+      }
+    });
+
     await prisma.sensorData.create({
       data: {
         free_ram: data.free_ram,
@@ -78,6 +103,7 @@ async function parser(message: string) {
         device_id: data.sensorCode,
         timestamp: new Date(data.timestamp),
         total_ram: data.total_ram,
+        alert: alarm ? true : false,
       },
     });
 
