@@ -4,12 +4,14 @@ import { alarmRoutes } from './routes/alarms';
 import { dataRoutes } from './routes/data';
 import { checkMasterCertificate } from './utils/certManager';
 import { initDevice } from './utils/initDevice';
+import { devicesRoutes } from './routes/devices';
 
 async function main() {
   const app = new Hono();
 
   app.route('/', dataRoutes);
   app.route('/', alarmRoutes);
+  app.route('/', devicesRoutes);
 
   app.get('/', c => {
     return c.text('Hello Hono!');
