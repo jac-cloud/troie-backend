@@ -4,9 +4,9 @@ services:
     ports:
       - '${DOCKER_PORT}:${PORT}'
     command: sh -c "bun i && bun prisma migrate deploy && bun prisma generate && bun src/index.ts"
+    working_dir: /app
     volumes:
       - .:/app
-    working_dir: /app
   db:
     image: postgres:alpine
     ports:
