@@ -13,7 +13,7 @@ const SensorDataParams = z.object({
 const SensorDataQuery = z.object({
   startDate: z.string().date(),
   endDate: z.string().date(),
-  points: z.number().optional(),
+  points: z.coerce.number().optional(),
 });
 
 const SensorDataResponse = z.array(
@@ -46,7 +46,7 @@ const SensorStatsParams = z.object({
 const SensorStatsQuery = z.object({
   startDate: z.string().date(),
   endDate: z.string().date(),
-  points: z.number().optional(),
+  points: z.coerce.number().optional(),
 });
 
 const SensorStatsResponse = z.array(
