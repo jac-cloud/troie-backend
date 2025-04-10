@@ -21,7 +21,7 @@ export async function getSensorStats(deviceId: string, startDate: string, endDat
       },
     },
     take: points,
-    orderBy: { timestamp: 'desc' },
+    orderBy: { timestamp: 'asc' },
   });
 
   if (sensorData.length <= points) {
